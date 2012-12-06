@@ -20,6 +20,18 @@ libexec_list = [
                 "src/CREAMCE-probe"
                ]
 
+package_list = [
+                "creammetrics",
+                "WNProbes/dirq",
+                "WNProbes/metric",
+                "WNProbes/mig",
+                "WNProbes/mig/bin",
+                "WNProbes/mig/connection",
+                "WNProbes/mig/discovery",
+                "WNProbes/msgdirq",
+                "WNProbes/stomp"
+               ]
+
 setup(
       name='cream-nagios',
       version=pkg_version,
@@ -34,7 +46,7 @@ CREAMCE-probe, CREAMCEDJS-probe, samtest-run.
       license='Apache Software License',
       author='CREAM group',
       author_email='CREAM group <cream-support@lists.infn.it>',
-      packages=['creammetrics'],
+      packages=package_list,
       package_dir = {'': 'src'},
       data_files=[
                   ('etc/gridmon', config_list),
