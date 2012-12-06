@@ -25,7 +25,7 @@ package_list = [
                 "WNProbes/dirq",
                 "WNProbes/metric",
                 "WNProbes/mig",
-                "WNProbes/mig/bin",
+                "WNProbes/mig/messaging",
                 "WNProbes/mig/connection",
                 "WNProbes/mig/discovery",
                 "WNProbes/msgdirq",
