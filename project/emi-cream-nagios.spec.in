@@ -1,0 +1,54 @@
+Summary: Nagios probe for the EMI CREAM and WN services
+Name: emi-cream-nagios
+Version: @PKGVERSION@
+Release: @PKGRELEASE@%{?dist}%{!?dist:.el5}
+License: Apache Software License
+Vendor: EMI
+URL: http://glite.cern.ch/
+Group: Applications/Internet
+BuildArch: noarch
+Obsoletes: info-dynamic-pbs <= 3.0.1
+Provides: info-dynamic-pbs = 3.0.2
+Requires: maui-client
+Requires: dynsched-generic  >= 2.5.3
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+AutoReqProv: yes
+Source: %{name}.tar.gz
+
+
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
+%description
+This package contains a set of NAGIOS plugins used to monitor a CREAM CE node.
+
+%prep
+
+%setup -c -q
+
+%build
+
+%install
+rm -rf %{buildroot}
+mkdir -p %{buildroot}
+python setup.py install -O1 --prefix %{buildroot}/usr --install-data %{buildroot}
+
+%clean
+rm -rf %{buildroot}
+
+%files
+%defattr(-,root,root)
+/usr/libexec/*
+%dir %{python_sitelib}/*.py
+%dir %{python_sitelib}/*.pyc
+%dir %{python_sitelib}/*.pyo
+%if 0%{?el6}
+%{python_sitelib}/*.egg-info
+%endif
+
+%changelog
+* Thu Nov 14 2013 CREAM group <cream-support@lists.infn.it> - @PKGVERSION@-@PKGRELEASE@
+- New major release
+
