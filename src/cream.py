@@ -391,6 +391,19 @@ class Client(object):
         raise Exception(output)
 
 
+    #Get Output Sandbox.
+    def getOutputSandbox(self, jobId):
+        self.debug("invoking getOutputSandbox")
+
+        cmd="/usr/bin/glite-ce-job-output --noint " + jobId
+        output = self.execute(cmd)
+
+        for elem in output:
+            if string.find(elem, "UBERFTP ERROR OUTPUT") > 0:
+                raise Exception("cannot retrieve the output sandbox")
+            elif string.find(elem, "output") > 0:
+                return elem[elem.find("./"):elem.find("\n")]
+
 
     #Execute command.
     def execute(self, command):

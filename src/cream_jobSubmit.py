@@ -52,6 +52,15 @@ def main():
         except Exception as ex:
             client.nagiosExit(client.UNKNOWN, ex)
 
+    if lastStatus == "DONE-OK":
+        try:
+            osbdir = client.getOutputSandbox(jobId)
+
+            client.debug("output sandbox dir: " + osbdir)
+        except Exception as ex:
+            client.nagiosExit(client.UNKNOWN, ex)
+
+
     try:       
         client.jobPurge(jobId)
     except Exception as ex:
