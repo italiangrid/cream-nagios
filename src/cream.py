@@ -42,7 +42,7 @@ class Client(object):
 
     # Variables
     usage = "usage %prog [options]"
-    probeName = "CREAMProbe"
+    # probeName = "CREAMProbe"
     optionParser = None
     options = None
     args = None
@@ -61,7 +61,7 @@ class Client(object):
         signal.signal(signal.SIGTERM, self.sig_handler)
         self.name = name
         self.version = version
-        self.optionParser = OptionParser(version="%s v.%s" % (self.probeName, "1.0"))
+        self.optionParser = OptionParser(version="%s v.%s" % (self.name, "1.0"))
 
 
     def getDefaultPort(self):
@@ -101,11 +101,6 @@ class Client(object):
                       dest="port",
                       help="The port of the service. [default: %default]")
                       
-        optionParser.add_option("-u",
-                      "--url",
-                      dest="url",
-                      help="The status endpoint URL of the service. Example: https://<host>[:<port>]")
-
         optionParser.add_option("-x",
                       "--proxy",
                       dest="proxy",
@@ -127,6 +122,11 @@ class Client(object):
                       default = self.getDefaultVerbosity())
  
         if fullOptional == "TRUE":
+            optionParser.add_option("-u",
+                      "--url",
+                      dest="url",
+                      help="The status endpoint URL of the service. Example: https://<host>[:<port>]/cream-<lrms>-<queue>")
+
             optionParser.add_option("-l",
                           "--lrms",
                           dest="lrms",
@@ -141,6 +141,12 @@ class Client(object):
                           "--jdl",
                           dest="jdl",
                           help="The jdl path")
+        else:
+            optionParser.add_option("-u",
+                      "--url",
+                      dest="url",
+                      help="The status endpoint URL of the service. Example: https://<host>[:<port>]")
+
 
 
     def readOptions(self):
@@ -255,7 +261,7 @@ class Client(object):
             self.nagiosExit(self.UNKNOWN, "X509_USER_PROXY not set")
     
         if not os.path.exists(os.environ["X509_USER_PROXY"]):
-            self.nagiosExit(self.UNKNOWN, "Proxy file not found or not readble")
+            self.nagiosExit(self.UNKNOWN, "Proxy file not found or not readable")
 
         cmd="/usr/bin/voms-proxy-info -timeleft"
 
@@ -360,8 +366,12 @@ class Client(object):
 
         cmd="/usr/bin/glite-ce-service-info " + self.url
         output = self.execute(cmd)
+        info = ""
 
-        return output
+        for elem in output:
+            info += elem
+
+        return info
 
 
 
@@ -384,7 +394,7 @@ class Client(object):
 
     #Execute command.
     def execute(self, command):
-        self.debug("executng command: " + command)
+        self.debug("executing command: " + command)
 
         args = shlex.split(command.encode('ascii'))
 
@@ -394,11 +404,11 @@ class Client(object):
         output = fPtr.readlines()
 
         if retVal != 0:
-            raise Exception("command '" + command + "' failed: return_code=" + str(proc.returncode) + "; details: " + repr(output))
+            raise Exception("command '" + command + "' failed: return_code=" + str(proc.returncode) + "\ndetails: " + repr(output))
 
         for elem in output:
             if "FaultString" in elem or "FaultCode" in elem or "FaultCause" in elem:
-                raise Exception("command '" + command + "' failed: return_code=" + str(proc.returncode) + "; details: " + repr(output))
+                raise Exception("command '" + command + "' failed: return_code=" + str(proc.returncode) + "\ndetails: " + repr(output))
 
         return output
 

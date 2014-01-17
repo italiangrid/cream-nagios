@@ -34,9 +34,9 @@ def main():
         client.checkProxy()
 
         data = client.allowedSubmission()
-        client.nagiosExit(creamClient.OK, data)
+        client.nagiosExit(client.OK, data)
     except Exception as ex:
-        client.nagiosExit(creamClient.UNKNOWN, ex)
+        client.nagiosExit(client.UNKNOWN, ex)
 
 
 if __name__ == '__main__':
