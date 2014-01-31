@@ -48,8 +48,7 @@ def main():
     while not lastStatus in activeStates:
         time.sleep(10)
         try:
-            lastStatus = client.jobStatus(jobId)
-
+            lastStatus, exitCode = client.jobStatus(jobId)
             client.debug("job status: " + lastStatus)
 
             if lastStatus in terminalStates:
@@ -66,7 +65,7 @@ def main():
     while not lastStatus == "CANCELLED":
         time.sleep(10)
         try:
-            lastStatus = client.jobStatus(jobId)
+            lastStatus, exitCode = client.jobStatus(jobId)
 
             client.debug("job status: " + lastStatus)
         except Exception as ex:
@@ -77,7 +76,7 @@ def main():
     except Exception as ex:
         client.debug("cannot purge the job")
 
-    client.nagiosExit(client.OK, "job cancelled")
+    client.nagiosExit(client.OK, "OK: job cancelled")
 
 if __name__ == '__main__':
     main()

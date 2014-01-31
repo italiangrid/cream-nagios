@@ -47,7 +47,7 @@ def main():
     while not lastStatus in terminalStates:
         time.sleep(10)
         try:
-            lastStatus = client.jobStatus(jobId)
+            lastStatus, exitCode = client.jobStatus(jobId)
 
             client.debug("job status: " + lastStatus)
         except Exception as ex:
@@ -61,11 +61,11 @@ def main():
     while (1):
         time.sleep(10)
         try:
-            lastStatus = client.jobStatus(jobId)
+            lastStatus, exitCode = client.jobStatus(jobId)
 
             client.debug("job status: " + lastStatus)
         except Exception as ex:
-            client.nagiosExit(client.OK, "job purged")
+            client.nagiosExit(client.OK, "OK: job purged")
 
 if __name__ == '__main__':
     main()

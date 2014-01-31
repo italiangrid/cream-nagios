@@ -24,6 +24,8 @@ __date__ = "27.09.2013"
 __version__ = "0.1.0"
 
 import time
+import dircache
+import shutil
 from cream import Client
 
 def main():
@@ -41,36 +43,54 @@ def main():
         client.nagiosExit(client.UNKNOWN, ex)
 
     terminalStates = ['DONE-OK', 'DONE-FAILED', 'ABORTED', 'CANCELLED']
-    lastStatus=""
+    lastStatus = ""
+    exitCode = None
 
     while not lastStatus in terminalStates:
         time.sleep(10)
         try:
-            lastStatus = client.jobStatus(jobId)
+            lastStatus, exitCode = client.jobStatus(jobId)
 
             client.debug("job status: " + lastStatus)
         except Exception as ex:
             client.nagiosExit(client.UNKNOWN, ex)
 
-    if lastStatus == "DONE-OK":
-        try:
-            osbdir = client.getOutputSandbox(jobId)
 
-            client.debug("output sandbox dir: " + osbdir)
-        except Exception as ex:
-            client.nagiosExit(client.UNKNOWN, ex)
+    outputSandbox = None
+    lastLine = None
 
+    #if lastStatus == "DONE-OK":
+    try:
+        osbdir = client.getOutputSandbox(jobId)
+
+        client.debug("output sandbox dir: " + osbdir)
+
+        dir = dircache.listdir(osbdir)
+
+        outputSandbox = ""
+        lastLine = ""
+
+        for file in dir:
+            with open(osbdir + "/" + file) as infile:
+                outputSandbox += "\n-------------------------\n" + file + "\n-------------------------\n"
+
+                for line in infile:
+                     outputSandbox += line
+                     lastLine = line
+
+        shutil.rmtree(osbdir)
+    except Exception as ex:
+        client.nagiosExit(client.UNKNOWN, ex)
 
     try:       
         client.jobPurge(jobId)
     except Exception as ex:
         client.debug("cannot purge the job" + ex)
 
-
-    if lastStatus == terminalStates[0]:
-        client.nagiosExit(client.OK, "Job terminated with status " + lastStatus)
+    if lastStatus == terminalStates[0] and exitCode == "0":
+        client.nagiosExit(client.OK, lastStatus + ": " + lastLine)
     else:
-        client.nagiosExit(client.UNKNOWN, "Job terminated with status " + lastStatus)
+        client.nagiosExit(client.UNKNOWN, "Job terminated with status=" + lastStatus + " and exitCode=" + exitCode + outputSandbox)
 
 
 

@@ -37,7 +37,7 @@ class Client(object):
     
     # Default values for the different options and Constants    
     DEFAULT_PORT = 8443
-    DEFAULT_TIMEOUT = 20
+    DEFAULT_TIMEOUT = 120
     DEFAULT_VERBOSITY = False 
 
     # Variables
@@ -45,6 +45,7 @@ class Client(object):
     # probeName = "CREAMProbe"
     optionParser = None
     options = None
+    dir = None
     args = None
     url = None
     hostname = None
@@ -52,32 +53,17 @@ class Client(object):
     jdl = None
     queue = None
     lrms = None
+    timeout = DEFAULT_TIMEOUT
     verbose = DEFAULT_VERBOSITY
     fullOptional = None
 
 
     def __init__(self, name, version):
-        signal.signal(signal.SIGALRM, self.sig_handler)
-        signal.signal(signal.SIGTERM, self.sig_handler)
+        #signal.signal(signal.SIGALRM, self.sig_handler)
+        #signal.signal(signal.SIGTERM, self.sig_handler)
         self.name = name
         self.version = version
         self.optionParser = OptionParser(version="%s v.%s" % (self.name, "1.0"))
-
-
-    def getDefaultPort(self):
-        return self.DEFAULT_PORT
-
-
-    def setDefaultPort(self, defaultPort):
-        self.DEFAULT_PORT = defaultPort
-
-
-    def getDefaultTimeout(self):
-        return self.DEFAULT_TIMEOUT
-
-
-    def getDefaultVerbosity(self):
-        return self.DEFAULT_VERBOSITY
 
 
     # return Values for Nagios
@@ -106,20 +92,20 @@ class Client(object):
                       dest="proxy",
                       help="The proxy path")
 
-        """
+        
         optionParser.add_option("-t",
                       "--timeout",
                       dest="timeout",
-                      help="The TCP timeout for the HTTPS connection. [default: %default]",
-                      default = self.getDefaultTimeout())
-        """
+                      help="Probe execution time limit. [default: %default sec]",
+                      default = self.DEFAULT_TIMEOUT)
+        
  
         optionParser.add_option("-v",
                       "--verbose",
                       action="store_true",
                       dest="verbose",
                       help="verbose mode [default: %default]",
-                      default = self.getDefaultVerbosity())
+                      default = self.DEFAULT_VERBOSITY)
  
         if fullOptional == "TRUE":
             optionParser.add_option("-u",
@@ -141,6 +127,13 @@ class Client(object):
                           "--jdl",
                           dest="jdl",
                           help="The jdl path")
+
+            if self.name == "cream-jobSubmit":
+                optionParser.add_option("-d",
+                              "--dir",
+                              dest="dir",
+                              help="The output sandbox path")
+
         else:
             optionParser.add_option("-u",
                       "--url",
@@ -209,6 +202,13 @@ class Client(object):
         if self.options.proxy:
             os.environ["X509_USER_PROXY"] = self.options.proxy
 
+
+        if self.options.timeout:
+            self.timeout = self.options.timeout
+
+        signal.signal(signal.SIGALRM, self.sig_handler)
+        signal.alarm(int(self.timeout)) # triger alarm in n seconds
+
         if self.fullOptional == "TRUE":
             if self.options.lrms:
                 if self.lrms:
@@ -233,6 +233,10 @@ class Client(object):
 
             self.url = self.hostname + ":" + str(self.port) + "/cream-" + self.lrms + "-" + self.queue
             #self.url = "%(hostname)s:%(port)s/cream-%(lrms)-%(queue)" % {'hostname': self.url, 'port': self.port, 'lrms': self.lrms, 'queue': self.queue}
+  
+            if self.name == "cream-jobSubmit" and self.options.dir:
+                self.dir = self.options.dir 
+
         else:
             self.url = self.hostname + ":" + str(self.port)
 
@@ -258,10 +262,10 @@ class Client(object):
     #Check whether the proxy exists and if it has any time left. 
     def checkProxy(self):
         if not os.environ.has_key("X509_USER_PROXY"):
-            self.nagiosExit(self.UNKNOWN, "X509_USER_PROXY not set")
+            raise Exception("X509_USER_PROXY not set")
     
         if not os.path.exists(os.environ["X509_USER_PROXY"]):
-            self.nagiosExit(self.UNKNOWN, "Proxy file not found or not readable")
+            raise Exception("Proxy file not found or not readable")
 
         cmd="/usr/bin/voms-proxy-info -timeleft"
 
@@ -278,6 +282,11 @@ class Client(object):
         output = self.execute(cmd)
 
         self.debug(output)
+
+        for elem in output:
+            if string.find(elem, "ERROR") > 0:
+                raise Exception(elem)
+
 
         """
         self.debug(cmd)
@@ -305,13 +314,13 @@ class Client(object):
     def jobStatus(self, jobId):
         self.debug("invoking jobStatus")
 
-        cmd="/usr/bin/glite-ce-job-status " + jobId
+        cmd = "/usr/bin/glite-ce-job-status " + jobId
 
         output = self.execute(cmd)
 
-        #self.debug(output)
+        self.debug(output)
         
-        status=None
+        status = None
         for i in output:
             if "Status" in i:
                 status=i
@@ -319,17 +328,23 @@ class Client(object):
         if not status:
             raise Exception("Status couldn't be determined for jobId " + jobId + ". Command reported: " + ','.join(output))
 
-        for elem in output:
-            if string.find(elem, "job not found") > 0:
-                #return "UNKNOWN"
-                raise Exception("Job " + jobId + " not found!")
+        jobStatus = status.split('[')
+        jobStatus = jobStatus[1].split(']')
 
-        split1 = status.split('[')
-        split2 = split1[1].split(']')
-        lastStatus=split2[0]
+        exitCode = None
+        for y in output:
+            if "ExitCode" in y:
+                exitCode = y
 
-        #self.debug("job terminated with status " + lastStatus)
-        return lastStatus
+        if exitCode:
+            self.debug("exitCode="+exitCode)
+
+            jobExitCode = exitCode.split('[')
+            jobExitCode = jobExitCode[1].split(']')
+
+            return jobStatus[0], jobExitCode[0]
+
+        return jobStatus[0], -1
 
 
 
@@ -395,14 +410,26 @@ class Client(object):
     def getOutputSandbox(self, jobId):
         self.debug("invoking getOutputSandbox")
 
-        cmd="/usr/bin/glite-ce-job-output --noint " + jobId
+        cmd="/usr/bin/glite-ce-job-output --noint"
+
+        if self.dir:
+            cmd += " --dir " + self.dir
+
+        cmd += " " + jobId
+
         output = self.execute(cmd)
+
+        #self.debug(output)
 
         for elem in output:
             if string.find(elem, "UBERFTP ERROR OUTPUT") > 0:
                 raise Exception("cannot retrieve the output sandbox")
             elif string.find(elem, "output") > 0:
-                return elem[elem.find("./"):elem.find("\n")]
+                result = elem[elem.find("dir "):elem.find("\n")]
+                if result:
+                    return result[4:]
+                else:
+                    return "n/a"
 
 
     #Execute command.

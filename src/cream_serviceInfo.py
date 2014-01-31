@@ -35,7 +35,8 @@ def main():
         client.checkProxy()
 
         data = client.serviceInfo()
-        client.nagiosExit(client.OK, data)
+        datv = data.split("\n")
+        client.nagiosExit(client.OK, "OK: " + datv[1])
     except Exception as ex:
         client.nagiosExit(client.UNKNOWN, ex)
 
