@@ -56,7 +56,7 @@ used to monitor a CREAM CE node.''',
       py_modules=['cream'],
       package_dir={'': 'src'},
       data_files=[
-                  ('usr/libexec', libexec_list)
+                  ('usr/libexec/grid-monitoring/probes/emi.cream', libexec_list)
                  ],
       cmdclass={'bdist_rpm': bdist_rpm}
      )
