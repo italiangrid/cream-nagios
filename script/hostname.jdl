@@ -1,0 +1,10 @@
+[
+Type="Job";
+JobType="Normal";
+Executable = "/bin/hostname";
+Arguments = "-s";
+StdOutput = "std.out";
+StdError = "std.err";
+OutputSandbox = {"std.out","std.err"};
+OutputSandboxBaseDestUri="gsiftp://localhost";
+]

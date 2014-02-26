@@ -1,0 +1,11 @@
+[
+Type="Job";
+JobType="Normal";
+Executable = "WN-csh.sh";
+#Arguments = "a b c";
+StdOutput = "std.out";
+StdError = "std.err";
+InputSandbox = {"/usr/libexec/grid-monitoring/probes/emi.cream/wn/WN-csh.sh"};
+OutputSandbox = {"std.out","std.err"};
+OutputSandboxBaseDestUri="gsiftp://localhost";
+]
