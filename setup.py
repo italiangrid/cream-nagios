@@ -9,7 +9,7 @@ pkg_name = 'emi-cream-nagios'
 pkg_version = '1.1.1'
 pkg_release = '2'
 
-source_items = "setup.py src"
+source_items = "setup.py src script"
 
 class bdist_rpm(_bdist_rpm):
 
@@ -42,8 +42,13 @@ libexec_list = [
                 "src/cream_jobCancel.py", 
                 "src/cream_jobPurge.py", 
                 "src/cream_jobSubmit.py", 
-                "src/cream_serviceInfo.py"
-               ]
+                "src/cream_serviceInfo.py",
+                "script/hostname.jdl",
+                "script/WN-csh.jdl",
+                "script/WN-csh.sh",
+                "script/WN-softver.jdl",
+                "script/WN-softver.sh"
+              ]
 
 setup(
       name=pkg_name,
