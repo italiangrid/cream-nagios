@@ -40,7 +40,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-/usr/libexec/*
+/usr/libexec/grid-monitoring/probes/emi.cream/*.py
 %dir %{python_sitelib}/*.py
 %dir %{python_sitelib}/*.pyc
 %dir %{python_sitelib}/*.pyo
