@@ -40,15 +40,18 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
+%dir /usr/libexec/grid-monitoring/probes/emi.cream
 /usr/libexec/grid-monitoring/probes/emi.cream/*
-%dir %{python_sitelib}/*.py
-%dir %{python_sitelib}/*.pyc
-%dir %{python_sitelib}/*.pyo
+%dir /usr/libexec/grid-monitoring/probes/emi.cream/wn
+/usr/libexec/grid-monitoring/probes/emi.cream/wn/*
+%{python_sitelib}/*.py
+%{python_sitelib}/*.pyc
+%{python_sitelib}/*.pyo
 %if 0%{?el6}
 %{python_sitelib}/*.egg-info
 %endif
 
 %changelog
-* Thu Nov 14 2013 CREAM group <cream-support@lists.infn.it> - @PKGVERSION@-@PKGRELEASE@
+* Fri Feb 28 2014 CREAM group <cream-support@lists.infn.it> - @PKGVERSION@-@PKGRELEASE@
 - New major release
 

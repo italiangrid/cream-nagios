@@ -7,7 +7,7 @@ from distutils.command.bdist_rpm import bdist_rpm as _bdist_rpm
 
 pkg_name = 'emi-cream-nagios'
 pkg_version = '1.1.1'
-pkg_release = '2'
+pkg_release = '3'
 
 source_items = "setup.py src script"
 
@@ -44,11 +44,19 @@ libexec_list = [
                 "src/cream_jobSubmit.py", 
                 "src/cream_serviceInfo.py",
                 "script/hostname.jdl",
+                "script/sleep.jdl",
                 "script/WN-csh.jdl",
                 "script/WN-csh.sh",
                 "script/WN-softver.jdl",
                 "script/WN-softver.sh"
               ]
+
+libexec_wn_list = [
+                    "script/WN-csh.jdl",
+                    "script/WN-csh.sh",
+                    "script/WN-softver.jdl",
+                    "script/WN-softver.sh"
+                  ]
 
 setup(
       name=pkg_name,
@@ -61,7 +69,8 @@ used to monitor a CREAM CE node.''',
       py_modules=['cream'],
       package_dir={'': 'src'},
       data_files=[
-                  ('usr/libexec/grid-monitoring/probes/emi.cream', libexec_list)
+                  ('usr/libexec/grid-monitoring/probes/emi.cream', libexec_list),
+                  ('usr/libexec/grid-monitoring/probes/emi.cream/wn', libexec_wn_list)
                  ],
       cmdclass={'bdist_rpm': bdist_rpm}
      )
