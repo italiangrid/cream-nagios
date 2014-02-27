@@ -44,11 +44,7 @@ libexec_list = [
                 "src/cream_jobSubmit.py", 
                 "src/cream_serviceInfo.py",
                 "script/hostname.jdl",
-                "script/sleep.jdl",
-                "script/WN-csh.jdl",
-                "script/WN-csh.sh",
-                "script/WN-softver.jdl",
-                "script/WN-softver.sh"
+                "script/sleep.jdl"
               ]
 
 libexec_wn_list = [
