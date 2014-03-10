@@ -7,7 +7,7 @@ from distutils.command.bdist_rpm import bdist_rpm as _bdist_rpm
 
 pkg_name = 'emi-cream-nagios'
 pkg_version = '1.1.1'
-pkg_release = '3'
+pkg_release = '4'
 
 source_items = "setup.py src script"
 
