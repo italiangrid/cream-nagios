@@ -38,7 +38,7 @@ def main():
 
         client.debug("job id: " + jobId)
     except Exception as ex:
-        client.nagiosExit(client.UNKNOWN, ex)
+        client.nagiosExit(client.CRITICAL, ex)
 
     activeStates = ['IDLE', 'RUNNING', 'REALLY-RUNNING']
     terminalStates = ['DONE-OK', 'DONE-FAILED', 'ABORTED', 'CANCELLED']
@@ -52,14 +52,14 @@ def main():
             client.debug("job status: " + lastStatus)
 
             if lastStatus in terminalStates:
-                client.nagiosExit(client.UNKNOWN, "job already terminated")
+                client.nagiosExit(client.CRITICAL, "job already terminated")
         except Exception as ex:
-            client.nagiosExit(client.UNKNOWN, ex)
+            client.nagiosExit(client.CRITICAL, ex)
 
     try:       
         client.jobCancel(jobId)
     except Exception as ex:
-        client.nagiosExit(client.UNKNOWN, ex)
+        client.nagiosExit(client.CRITICAL, ex)
 
 
     while not lastStatus == "CANCELLED":
@@ -69,7 +69,7 @@ def main():
 
             client.debug("job status: " + lastStatus)
         except Exception as ex:
-            client.nagiosExit(client.UNKNOWN, ex)
+            client.nagiosExit(client.CRITICAL, ex)
 
     try:
         client.jobPurge(jobId)

@@ -198,7 +198,7 @@ class Client(object):
 
         if self.options.verbose:
             self.verbose = self.options.verbose
-
+ 
         if self.options.proxy:
             os.environ["X509_USER_PROXY"] = self.options.proxy
 
@@ -245,9 +245,9 @@ class Client(object):
     # set-up the signal-handlers                        
     def sig_handler(self, signum, frame):
         if signum == signal.SIGALRM:
-            self.nagiosExit(self.UNKNOWN, "Received timeout while fetching results.")
+            self.nagiosExit(self.CRITICAL, "Received timeout while fetching results.")
         elif signum == signal.SIGTERM:
-            self.nagiosExit(self.UNKNOWN, "SIGTERM received.")
+            self.nagiosExit(self.CRITICAL, "SIGTERM received.")
 
 
 
@@ -473,7 +473,7 @@ def main():
 
         probe.jobPurge(jobId)
     except Exception as ex:
-        probe.nagiosExit(probe.UNKNOWN, ex)
+        probe.nagiosExit(probe.CRITICAL, ex)
 
     terminalStates = ['DONE-OK', 'DONE-FAILED', 'ABORTED', 'CANCELLED']
     lastStatus=""
@@ -483,14 +483,14 @@ def main():
         try:
             lastStatus = probe.jobStatus(jobId)
         except Exception as ex:
-            probe.nagiosExit(probe.UNKNOWN, ex)
+            probe.nagiosExit(probe.CRITICAL, ex)
            
     probe.jobPurge(jobId)
 
     if lastStatus == terminalStates[0]:
         probe.nagiosExit(probe.OK, "Job terminated with status " + lastStatus)
     else:
-        probe.nagiosExit(probe.UNKNOWN, "Job terminated with status " + lastStatus)
+        probe.nagiosExit(probe.CRITICAL, "Job terminated with status " + lastStatus)
 
 
 

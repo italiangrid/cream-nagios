@@ -38,7 +38,7 @@ def main():
         datv = data.split("\n")
         client.nagiosExit(client.OK, "OK: " + datv[1])
     except Exception as ex:
-        client.nagiosExit(client.UNKNOWN, ex)
+        client.nagiosExit(client.CRITICAL, ex)
 
 
 

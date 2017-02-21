@@ -40,7 +40,7 @@ def main():
 
         client.debug("job id: " + jobId)
     except Exception as ex:
-        client.nagiosExit(client.UNKNOWN, ex)
+        client.nagiosExit(client.CRITICAL, ex)
 
     terminalStates = ['DONE-OK', 'DONE-FAILED', 'ABORTED', 'CANCELLED']
     lastStatus = ""
@@ -53,7 +53,7 @@ def main():
 
             client.debug("job status: " + lastStatus)
         except Exception as ex:
-            client.nagiosExit(client.UNKNOWN, ex)
+            client.nagiosExit(client.CRITICAL, ex)
 
 
     outputSandbox = None
@@ -80,7 +80,7 @@ def main():
 
         shutil.rmtree(osbdir)
     except Exception as ex:
-        client.nagiosExit(client.UNKNOWN, ex)
+        client.nagiosExit(client.CRITICAL, ex)
 
     try:       
         client.jobPurge(jobId)
@@ -90,7 +90,7 @@ def main():
     if lastStatus == terminalStates[0] and exitCode == "0":
         client.nagiosExit(client.OK, lastStatus + ": " + lastLine)
     else:
-        client.nagiosExit(client.UNKNOWN, "Job terminated with status=" + lastStatus + " and exitCode=" + exitCode + outputSandbox)
+        client.nagiosExit(client.CRITICAL, "Job terminated with status=" + lastStatus + " and exitCode=" + exitCode + outputSandbox)
 
 
 

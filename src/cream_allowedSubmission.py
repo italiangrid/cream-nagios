@@ -36,7 +36,7 @@ def main():
         data = client.allowedSubmission()
         client.nagiosExit(client.OK, "OK: " + data)
     except Exception as ex:
-        client.nagiosExit(client.UNKNOWN, ex)
+        client.nagiosExit(client.CRITICAL, ex)
 
 
 if __name__ == '__main__':

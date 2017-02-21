@@ -38,7 +38,7 @@ def main():
 
         client.debug("job id: " + jobId)
     except Exception as ex:
-        client.nagiosExit(client.UNKNOWN, ex)
+        client.nagiosExit(client.CRITICAL, ex)
 
     terminalStates = ['DONE-OK', 'DONE-FAILED', 'ABORTED', 'CANCELLED']
 
@@ -51,12 +51,12 @@ def main():
 
             client.debug("job status: " + lastStatus)
         except Exception as ex:
-            client.nagiosExit(client.UNKNOWN, ex)
+            client.nagiosExit(client.CRITICAL, ex)
 
     try:       
         client.jobPurge(jobId)
     except Exception as ex:
-        client.nagiosExit(client.UNKNOWN, ex)
+        client.nagiosExit(client.CRITICAL, ex)
 
     while (1):
         time.sleep(10)
