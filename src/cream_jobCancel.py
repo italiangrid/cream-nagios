@@ -40,7 +40,7 @@ def main():
     except Exception as ex:
         client.nagiosExit(client.UNKNOWN, ex)
 
-    activeStates = ['PENDING', 'RUNNING', 'REALLY-RUNNING']
+    activeStates = ['IDLE', 'RUNNING', 'REALLY-RUNNING']
     terminalStates = ['DONE-OK', 'DONE-FAILED', 'ABORTED', 'CANCELLED']
 
     lastStatus=""
