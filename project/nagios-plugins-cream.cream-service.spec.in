@@ -37,6 +37,8 @@ The plugin is suitable to be used by ARGO monitoring system.
 rm -rf %{buildroot}
 mkdir -p %{buildroot}
 python setup.py install -O1 --prefix %{buildroot}/usr --install-data %{buildroot}
+rm -f %{buildroot}/usr/libexec/argo-monitoring/probes/it.infn.monitoring/*.pyc
+rm -f %{buildroot}/usr/libexec/argo-monitoring/probes/it.infn.monitoring/*.pyo
 
 %clean
 rm -rf %{buildroot}
@@ -53,7 +55,7 @@ rm -rf %{buildroot}
 %dir /usr/libexec/argo-monitoring/probes/it.infn.monitoring
 /usr/libexec/argo-monitoring/probes/it.infn.monitoring/*
 %dir /etc/nagios/plugins/it.infn.monitoring
-/etc/nagios/plugins/it.infn.monitoring/*
+%config(noreplace) /etc/nagios/plugins/it.infn.monitoring/*
 
 %changelog
 * Mon Sep  3 2018 CREAM group <cream-support@lists.infn.it> - @PKGVERSION@-@PKGRELEASE@
