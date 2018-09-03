@@ -23,7 +23,7 @@ __author__ = "Lisa Zangrando lisa.zangrando@pd.infn.it"
 __date__ = "27.09.2013"
 __version__ = "0.1.0"
 
-from cream import Client
+from it.infn.monitoring.cream import Client
 
 def main():
     client = Client("cream_allowedSubmission", "1.0")

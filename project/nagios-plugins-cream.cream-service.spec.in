@@ -1,0 +1,64 @@
+Name: nagios-plugins-cream.cream-service
+Version: @PKGVERSION@
+Release: @PKGRELEASE@%{?dist}
+License: Apache Software License
+Vendor: EMI
+URL: https://cream-guide.readthedocs.io/en/latest/
+Group: Applications/Internet
+BuildArch: noarch
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+AutoReqProv: yes
+Source: %{name}.tar.gz
+%if 0%{?el6}
+Provides: emi-cream-nagios = @PKGVERSION@-@PKGRELEASE@
+Obsoletes: emi-cream-nagios < 1.1.1-3
+%endif
+Requires: glite-ce-cream-cli
+
+Summary: Nagios probe for the CREAM computing element
+
+
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
+%description
+This package contains a set of NAGIOS plugins used to monitor a CREAM CE node.
+The plugin is suitable to be used by ARGO monitoring system.
+
+%prep
+
+%setup -c -q
+
+%build
+
+%install
+rm -rf %{buildroot}
+mkdir -p %{buildroot}
+python setup.py install -O1 --prefix %{buildroot}/usr --install-data %{buildroot}
+
+%clean
+rm -rf %{buildroot}
+
+%files
+%defattr(-,root,root)
+%dir %{python_sitelib}/it
+%dir %{python_sitelib}/it/infn
+%dir %{python_sitelib}/it/infn/monitoring
+%{python_sitelib}/it/infn/monitoring/*.py
+%{python_sitelib}/it/infn/monitoring/*.pyc
+%{python_sitelib}/it/infn/monitoring/*.pyo
+%{python_sitelib}/*.egg-info
+%dir /usr/libexec/argo-monitoring/probes/it.infn.monitoring
+/usr/libexec/argo-monitoring/probes/it.infn.monitoring/*
+%dir /etc/nagios/plugins/it.infn.monitoring
+/etc/nagios/plugins/it.infn.monitoring/*
+
+%changelog
+* Mon Sep  3 2018 CREAM group <cream-support@lists.infn.it> - @PKGVERSION@-@PKGRELEASE@
+- Repackaging according to ARGO policies
+
+* Fri Feb 28 2014 CREAM group <cream-support@lists.infn.it> - 1.1.1-3
+- New major release
+

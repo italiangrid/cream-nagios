@@ -5,9 +5,9 @@ from subprocess import Popen as execScript
 from distutils.core import setup
 from distutils.command.bdist_rpm import bdist_rpm as _bdist_rpm
 
-pkg_name = 'emi-cream-nagios'
-pkg_version = '1.1.1'
-pkg_release = '4'
+pkg_name = 'nagios-plugins-cream.cream-service'
+pkg_version = '1.2.1'
+pkg_release = '1'
 
 source_items = "setup.py src script"
 
@@ -43,16 +43,12 @@ libexec_list = [
                 "src/cream_jobPurge.py", 
                 "src/cream_jobSubmit.py", 
                 "src/cream_serviceInfo.py",
-                "script/hostname.jdl",
-                "script/sleep.jdl"
-              ]
+               ]
 
-libexec_wn_list = [
-                    "script/WN-csh.jdl",
-                    "script/WN-csh.sh",
-                    "script/WN-softver.jdl",
-                    "script/WN-softver.sh"
-                  ]
+etc_list = [
+            "script/hostname.jdl",
+            "script/sleep.jdl"
+           ]
 
 setup(
       name=pkg_name,
@@ -62,11 +58,11 @@ setup(
 used to monitor a CREAM CE node.''',
       license='Apache Software License',
       author_email='CREAM group <cream-support@lists.infn.it>',
-      py_modules=['cream'],
+      packages=['it.infn.monitoring'],
       package_dir={'': 'src'},
       data_files=[
-                  ('usr/libexec/grid-monitoring/probes/emi.cream', libexec_list),
-                  ('usr/libexec/grid-monitoring/probes/emi.cream/wn', libexec_wn_list)
+                  ('usr/libexec/argo-monitoring/probes/it.infn.monitoring', libexec_list),
+                  ('etc/nagios/plugins/it.infn.monitoring', etc_list)
                  ],
       cmdclass={'bdist_rpm': bdist_rpm}
      )

@@ -26,7 +26,7 @@ __version__ = "0.1.0"
 import time
 import dircache
 import shutil
-from cream import Client
+from it.infn.monitoring.cream import Client
 
 def main():
     client = Client("cream-jobSubmit", "1.0")
