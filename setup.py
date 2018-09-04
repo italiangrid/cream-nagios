@@ -37,17 +37,24 @@ class bdist_rpm(_bdist_rpm):
         execScript(shlex.split(cmdline)).communicate()
 
 
-libexec_list = [
-                "src/cream_allowedSubmission.py",
-                "src/cream_jobCancel.py", 
-                "src/cream_jobPurge.py", 
-                "src/cream_jobSubmit.py", 
-                "src/cream_serviceInfo.py",
+python_scripts = [
+                  "src/cream_allowedSubmission.py",
+                  "src/cream_jobCancel.py", 
+                  "src/cream_jobPurge.py", 
+                  "src/cream_jobSubmit.py", 
+                  "src/cream_serviceInfo.py",
+                 ]
+
+bash_scripts = [
+                "script/WN-softver.sh",
+                "script/WN-csh.sh"
                ]
 
 etc_list = [
             "script/hostname.jdl",
-            "script/sleep.jdl"
+            "script/sleep.jdl",
+            "script/WN-softver.jdl,
+            "script/WN-csh.jdl"
            ]
 
 setup(
@@ -60,8 +67,9 @@ used to monitor a CREAM CE node.''',
       author_email='CREAM group <cream-support@lists.infn.it>',
       packages=['it.infn.monitoring'],
       package_dir={'': 'src'},
+      scripts=python_scripts,
       data_files=[
-                  ('usr/libexec/argo-monitoring/probes/it.infn.monitoring', libexec_list),
+                  ('usr/libexec/argo-monitoring/probes/it.infn.monitoring', bash_scripts),
                   ('etc/nagios/plugins/it.infn.monitoring', etc_list)
                  ],
       cmdclass={'bdist_rpm': bdist_rpm}

@@ -11,7 +11,7 @@ AutoReqProv: yes
 Source: %{name}.tar.gz
 %if 0%{?el6}
 Provides: emi-cream-nagios = @PKGVERSION@-@PKGRELEASE@
-Obsoletes: emi-cream-nagios < 1.1.1-3
+Obsoletes: emi-cream-nagios < 1.1.1-4
 %endif
 Requires: glite-ce-cream-cli
 
@@ -36,9 +36,7 @@ The plugin is suitable to be used by ARGO monitoring system.
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}
-python setup.py install -O1 --prefix %{buildroot}/usr --install-data %{buildroot}
-rm -f %{buildroot}/usr/libexec/argo-monitoring/probes/it.infn.monitoring/*.pyc
-rm -f %{buildroot}/usr/libexec/argo-monitoring/probes/it.infn.monitoring/*.pyo
+python setup.py install -O1 --prefix %{buildroot}/usr --install-data %{buildroot} --install-scripts %{buildroot}/usr/libexec/argo-monitoring/probes/it.infn.monitoring
 
 %clean
 rm -rf %{buildroot}
