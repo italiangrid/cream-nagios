@@ -53,7 +53,7 @@ bash_scripts = [
 etc_list = [
             "script/hostname.jdl",
             "script/sleep.jdl",
-            "script/WN-softver.jdl,
+            "script/WN-softver.jdl",
             "script/WN-csh.jdl"
            ]
 
