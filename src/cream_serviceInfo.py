@@ -24,7 +24,7 @@ __date__ = "27.09.2013"
 __version__ = "0.1.0"
 
 
-from it.infn.monitoring.cream import Client
+from cream_cli import Client
 
 def main():
     client = Client("cream_serviceInfo", "1.0")

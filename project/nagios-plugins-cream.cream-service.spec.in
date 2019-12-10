@@ -45,10 +45,10 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %dir %{python_sitelib}/it
 %dir %{python_sitelib}/it/infn
-%dir %{python_sitelib}/it/infn/monitoring
-%{python_sitelib}/it/infn/monitoring/*.py
-%{python_sitelib}/it/infn/monitoring/*.pyc
-%{python_sitelib}/it/infn/monitoring/*.pyo
+%dir %{python_sitelib}/cream_cli
+%{python_sitelib}/cream_cli/*.py
+%{python_sitelib}/cream_cli/*.pyc
+%{python_sitelib}/cream_cli/*.pyo
 %{python_sitelib}/*.egg-info
 %dir /usr/libexec/argo-monitoring/probes/it.infn.monitoring
 /usr/libexec/argo-monitoring/probes/it.infn.monitoring/*

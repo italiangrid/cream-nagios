@@ -40,9 +40,8 @@ class bdist_rpm(_bdist_rpm):
 python_scripts = [
                   "src/cream_allowedSubmission.py",
                   "src/cream_jobCancel.py", 
-                  "src/cream_jobPurge.py", 
                   "src/cream_jobSubmit.py", 
-                  "src/cream_serviceInfo.py",
+                  "src/cream_serviceInfo.py"
                  ]
 
 bash_scripts = [
