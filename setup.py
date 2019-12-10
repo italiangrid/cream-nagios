@@ -8,6 +8,7 @@ from distutils.command.bdist_rpm import bdist_rpm as _bdist_rpm
 pkg_name = 'nagios-plugins-cream.cream-service'
 pkg_version = '1.2.1'
 pkg_release = '1'
+pkg_ns = 'it.infn.monitoring'
 
 source_items = "setup.py src script"
 
@@ -29,7 +30,11 @@ class bdist_rpm(_bdist_rpm):
         execScript(shlex.split(cmdline)).communicate()
         
         specOut = open(os.path.join(specdir, pkg_name + '.spec'),'w')
-        cmdline = "sed -e 's|@PKGVERSION@|%s|g' -e 's|@PKGRELEASE@|%s|g' project/%s.spec.in" % (pkg_version, pkg_release, pkg_name)
+        cmdline = "sed "
+        cmdline += "-e 's|@PKGVERSION@|%s|g' " % pkg_version
+        cmdline += "-e 's|@PKGRELEASE@|%s|g " % pkg_release
+        cmdline += "-e 's|@PKGNS@|%s|g' " % pkg_ns
+        cmdline += "project/%s.spec.in" % pkg_name
         execScript(shlex.split(cmdline), stdout=specOut, stderr=sys.stderr).communicate()
         specOut.close()
         
@@ -64,12 +69,12 @@ setup(
 used to monitor a CREAM CE node.''',
       license='Apache Software License',
       author_email='CREAM group <cream-support@lists.infn.it>',
-      packages=['it.infn.monitoring'],
+      packages=['cream_cli'],
       package_dir={'': 'src'},
       scripts=python_scripts,
       data_files=[
-                  ('usr/libexec/argo-monitoring/probes/it.infn.monitoring', bash_scripts),
-                  ('etc/nagios/plugins/it.infn.monitoring', etc_list)
+                  ('usr/libexec/argo-monitoring/probes/%s' % pkg_ns, bash_scripts),
+                  ('etc/nagios/plugins/%s' % pkg_ns, etc_list)
                  ],
       cmdclass={'bdist_rpm': bdist_rpm}
      )
