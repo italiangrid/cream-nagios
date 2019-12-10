@@ -32,7 +32,7 @@ class bdist_rpm(_bdist_rpm):
         specOut = open(os.path.join(specdir, pkg_name + '.spec'),'w')
         cmdline = "sed "
         cmdline += "-e 's|@PKGVERSION@|%s|g' " % pkg_version
-        cmdline += "-e 's|@PKGRELEASE@|%s|g " % pkg_release
+        cmdline += "-e 's|@PKGRELEASE@|%s|g' " % pkg_release
         cmdline += "-e 's|@PKGNS@|%s|g' " % pkg_ns
         cmdline += "project/%s.spec.in" % pkg_name
         execScript(shlex.split(cmdline), stdout=specOut, stderr=sys.stderr).communicate()
