@@ -91,7 +91,6 @@ class Client(object):
                       "--proxy",
                       dest="proxy",
                       help="The proxy path")
-
         
         optionParser.add_option("-t",
                       "--timeout",
@@ -99,7 +98,6 @@ class Client(object):
                       help="Probe execution time limit. [default: %default sec]",
                       default = self.DEFAULT_TIMEOUT)
         
- 
         optionParser.add_option("-v",
                       "--verbose",
                       action="store_true",
@@ -128,10 +126,11 @@ class Client(object):
                           dest="jdl",
                           help="The jdl path")
 
-            if self.name == "cream-jobSubmit":
+            if self.name == "cream-jobOutput":
                 optionParser.add_option("-d",
                               "--dir",
                               dest="dir",
+                              default = "/var/lib/argo-monitoring/eu.egi.CREAMCE",
                               help="The output sandbox path")
 
         else:
@@ -171,7 +170,7 @@ class Client(object):
 
             if o.path:
                 if self.fullOptional == "FALSE":
-                    optionParser.error("wrog URL (use 'https://<hostname>[:<port>]')")
+                    optionParser.error("wrong URL (use 'https://<hostname>[:<port>]')")
                 else:
                     s = o.path.split("-")
 
@@ -234,9 +233,8 @@ class Client(object):
             self.url = self.hostname + ":" + str(self.port) + "/cream-" + self.lrms + "-" + self.queue
             #self.url = "%(hostname)s:%(port)s/cream-%(lrms)-%(queue)" % {'hostname': self.url, 'port': self.port, 'lrms': self.lrms, 'queue': self.queue}
   
-            if self.name == "cream-jobSubmit" and self.options.dir:
-                self.dir = self.options.dir 
-
+            if self.name == "cream-jobOutput" and self.options.dir:
+                    self.dir = self.options.dir 
         else:
             self.url = self.hostname + ":" + str(self.port)
 
@@ -245,9 +243,9 @@ class Client(object):
     # set-up the signal-handlers                        
     def sig_handler(self, signum, frame):
         if signum == signal.SIGALRM:
-            self.nagiosExit(self.CRITICAL, "Received timeout while fetching results.")
+            self.nagiosExit(self.WARNING, "Timeout occurred (" + str(self.timeout) + " sec)")
         elif signum == signal.SIGTERM:
-            self.nagiosExit(self.CRITICAL, "SIGTERM received.")
+            self.nagiosExit(self.WARNING, "SIGTERM received!")
 
 
 
@@ -416,10 +414,7 @@ class Client(object):
             cmd += " --dir " + self.dir
 
         cmd += " " + jobId
-
         output = self.execute(cmd)
-
-        #self.debug(output)
 
         for elem in output:
             if string.find(elem, "UBERFTP ERROR OUTPUT") > 0:
@@ -447,7 +442,7 @@ class Client(object):
             raise Exception("command '" + command + "' failed: return_code=" + str(proc.returncode) + "\ndetails: " + repr(output))
 
         for elem in output:
-            if "FaultString" in elem or "FaultCode" in elem or "FaultCause" in elem:
+            if "ERROR" in elem or "FATAL" in elem or "FaultString" in elem or "FaultCode" in elem or "FaultCause" in elem:
                 raise Exception("command '" + command + "' failed: return_code=" + str(proc.returncode) + "\ndetails: " + repr(output))
 
         return output

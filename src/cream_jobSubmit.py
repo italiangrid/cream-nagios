@@ -20,16 +20,16 @@ Nagios plugin which submits a job to CREAM CE, checks its terminal status and fi
 ------------------------------------------------------------------------------------------------
 """
 __author__ = "Lisa Zangrando lisa.zangrando@pd.infn.it"
-__date__ = "27.09.2013"
-__version__ = "0.1.0"
+__date__ = "12.12.2019"
+__version__ = "0.1.1"
 
 import time
 import dircache
 import shutil
-from cream_cli import Client
+from cream_cli.cream import Client
 
 def main():
-    client = Client("cream-jobSubmit", "1.0")
+    client = Client("cream-jobSubmit", "1.1")
     client.createParser()
     client.readOptions()
 
@@ -40,47 +40,21 @@ def main():
 
         client.debug("job id: " + jobId)
     except Exception as ex:
-        client.nagiosExit(client.CRITICAL, ex)
+        client.nagiosExit(client.CRITICAL, "CREAM JobSubmit ERROR: %s" % ex)
 
     terminalStates = ['DONE-OK', 'DONE-FAILED', 'ABORTED', 'CANCELLED']
     lastStatus = ""
     exitCode = None
 
-    while not lastStatus in terminalStates:
+    while (lastStatus not in terminalStates or exitCode not in ['0', '1', 'N/A']):
+
         time.sleep(10)
         try:
             lastStatus, exitCode = client.jobStatus(jobId)
 
             client.debug("job status: " + lastStatus)
         except Exception as ex:
-            client.nagiosExit(client.CRITICAL, ex)
-
-
-    outputSandbox = None
-    lastLine = None
-
-    #if lastStatus == "DONE-OK":
-    try:
-        osbdir = client.getOutputSandbox(jobId)
-
-        client.debug("output sandbox dir: " + osbdir)
-
-        dir = dircache.listdir(osbdir)
-
-        outputSandbox = ""
-        lastLine = ""
-
-        for file in dir:
-            with open(osbdir + "/" + file) as infile:
-                outputSandbox += "\n-------------------------\n" + file + "\n-------------------------\n"
-
-                for line in infile:
-                     outputSandbox += line
-                     lastLine = line
-
-        shutil.rmtree(osbdir)
-    except Exception as ex:
-        client.nagiosExit(client.CRITICAL, ex)
+            client.nagiosExit(client.CRITICAL, "CREAM JobSubmit ERROR: %s" % ex)
 
     try:       
         client.jobPurge(jobId)
@@ -88,9 +62,10 @@ def main():
         client.debug("cannot purge the job" + ex)
 
     if lastStatus == terminalStates[0] and exitCode == "0":
-        client.nagiosExit(client.OK, lastStatus + ": " + lastLine)
+        client.nagiosExit(client.OK, "CREAM JobSubmit OK [%s]" % lastStatus)
+
     else:
-        client.nagiosExit(client.CRITICAL, "Job terminated with status=" + lastStatus + " and exitCode=" + exitCode + outputSandbox)
+        client.nagiosExit(client.CRITICAL, "CREAM JobSubmit ERROR [%s, exitCode=%s]" % (lastStatus, exitCode))
 
 
 

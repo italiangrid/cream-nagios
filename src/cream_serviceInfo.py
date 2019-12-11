@@ -20,14 +20,14 @@ Nagios plugin which retrieves the service info from the CREAM CE.
 -----------------------------------------------------------------
 """
 __author__ = "Lisa Zangrando lisa.zangrando@pd.infn.it"
-__date__ = "27.09.2013"
-__version__ = "0.1.0"
+__date__ = "12.12.2019"
+__version__ = "0.1.1"
 
 
-from cream_cli import Client
+from cream_cli.cream import Client
 
 def main():
-    client = Client("cream_serviceInfo", "1.0")
+    client = Client("cream_serviceInfo", "1.1")
     client.createParser("FALSE")
     client.readOptions()
 
@@ -36,9 +36,9 @@ def main():
 
         data = client.serviceInfo()
         datv = data.split("\n")
-        client.nagiosExit(client.OK, "OK: " + datv[1])
+        client.nagiosExit(client.OK, "CREAM serviceInfo OK: %s" % datv[1])
     except Exception as ex:
-        client.nagiosExit(client.CRITICAL, ex)
+        client.nagiosExit(client.CRITICAL, "CREAM serviceInfo ERROR: %s" % ex)
 
 
 

@@ -20,13 +20,13 @@ Nagios plugin which checks if the submission is allowed
 -------------------------------------------------------
 """
 __author__ = "Lisa Zangrando lisa.zangrando@pd.infn.it"
-__date__ = "27.09.2013"
-__version__ = "0.1.0"
+__date__ = "12.12.2019"
+__version__ = "0.1.1"
 
-from cream_cli import Client
+from cream_cli.cream import Client
 
 def main():
-    client = Client("cream_allowedSubmission", "1.0")
+    client = Client("cream_allowedSubmission", "1.1")
     client.createParser("FALSE")
     client.readOptions()
 
@@ -34,9 +34,9 @@ def main():
         client.checkProxy()
 
         data = client.allowedSubmission()
-        client.nagiosExit(client.OK, "OK: " + data)
+        client.nagiosExit(client.OK, "CREAM allowedSubmission OK: the job submission is %s" % data)
     except Exception as ex:
-        client.nagiosExit(client.CRITICAL, ex)
+        client.nagiosExit(client.CRITICAL, "CREAM allowedSubmission ERROR: %s" % ex)
 
 
 if __name__ == '__main__':
