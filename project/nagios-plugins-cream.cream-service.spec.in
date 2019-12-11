@@ -37,6 +37,7 @@ The plugin is suitable to be used by ARGO monitoring system.
 rm -rf %{buildroot}
 mkdir -p %{buildroot}
 python setup.py install -O1 --prefix %{buildroot}/usr --install-data %{buildroot} --install-scripts %{buildroot}/usr/libexec/argo-monitoring/probes/@PKGNS@
+mkdir -p %{buildroot}/var/lib/argo-monitoring/@PKGNS@
 
 %clean
 rm -rf %{buildroot}
