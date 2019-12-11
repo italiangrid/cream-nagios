@@ -48,6 +48,7 @@ rm -rf %{buildroot}
 %{python_sitelib}/cream_cli/*.pyc
 %{python_sitelib}/cream_cli/*.pyo
 %{python_sitelib}/*.egg-info
+%dir /var/lib/argo-monitoring/@PKGNS@
 %dir /usr/libexec/argo-monitoring/probes/@PKGNS@
 /usr/libexec/argo-monitoring/probes/@PKGNS@/*
 %dir /etc/nagios/plugins/@PKGNS@
