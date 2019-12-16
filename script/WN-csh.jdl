@@ -5,7 +5,7 @@ Executable = "WN-csh.sh";
 #Arguments = "a b c";
 StdOutput = "std.out";
 StdError = "std.err";
-InputSandbox = {"/usr/libexec/argo-monitoring/probes/it.infn.monitoring/WN-csh.sh"};
+InputSandbox = {"/etc/nagios/plugins/eu.egi.CREAMCE/WN-csh.sh"};
 OutputSandbox = {"std.out","std.err"};
 OutputSandboxBaseDestUri="gsiftp://localhost";
 ]

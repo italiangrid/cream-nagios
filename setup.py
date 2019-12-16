@@ -49,16 +49,13 @@ python_scripts = [
                   "src/cream_serviceInfo.py"
                  ]
 
-bash_scripts = [
-                "script/WN-softver.sh",
-                "script/WN-csh.sh"
-               ]
-
 etc_list = [
             "script/hostname.jdl",
             "script/sleep.jdl",
             "script/WN-softver.jdl",
-            "script/WN-csh.jdl"
+            "script/WN-csh.jdl",
+            "script/WN-softver.sh",
+            "script/WN-csh.sh"
            ]
 
 setup(
@@ -72,10 +69,7 @@ used to monitor a CREAM CE node.''',
       packages=['cream_cli'],
       package_dir={'': 'src'},
       scripts=python_scripts,
-      data_files=[
-                  ('usr/libexec/argo-monitoring/probes/%s' % pkg_ns, bash_scripts),
-                  ('etc/nagios/plugins/%s' % pkg_ns, etc_list)
-                 ],
+      data_files=[ ('etc/nagios/plugins/%s' % pkg_ns, etc_list) ],
       cmdclass={'bdist_rpm': bdist_rpm}
      )
 

@@ -49,14 +49,14 @@ rm -rf %{buildroot}
 %{python_sitelib}/cream_cli/*.pyc
 %{python_sitelib}/cream_cli/*.pyo
 %{python_sitelib}/*.egg-info
-%dir /var/lib/argo-monitoring/@PKGNS@
+%attr(0750, nagios, nagios) %dir /var/lib/argo-monitoring/@PKGNS@
 %dir /usr/libexec/argo-monitoring/probes/@PKGNS@
 /usr/libexec/argo-monitoring/probes/@PKGNS@/*
 %dir /etc/nagios/plugins/@PKGNS@
 %config(noreplace) /etc/nagios/plugins/@PKGNS@/*
 
 %changelog
-* Mon Sep  3 2018 CREAM group <cream-support@lists.infn.it> - @PKGVERSION@-@PKGRELEASE@
+* Fri Dec 13 2019 CREAM group <cream-support@lists.infn.it> - @PKGVERSION@-@PKGRELEASE@
 - Repackaging according to ARGO policies
 
 * Fri Feb 28 2014 CREAM group <cream-support@lists.infn.it> - 1.1.1-3

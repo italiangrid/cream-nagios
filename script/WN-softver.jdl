@@ -5,7 +5,7 @@ Executable = "WN-softver.sh";
 #Arguments = "a b c";
 StdOutput = "std.out";
 StdError = "std.err";
-InputSandbox = {"/usr/libexec/argo-monitoring/probes/it.infn.monitoring/WN-softver.sh"};
+InputSandbox = {"/etc/nagios/plugins/eu.egi.CREAMCE/WN-softver.sh"};
 OutputSandbox = {"std.out","std.err"};
 OutputSandboxBaseDestUri="gsiftp://localhost";
 ]
