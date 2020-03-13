@@ -39,6 +39,7 @@ class Client(object):
     DEFAULT_PORT = 8443
     DEFAULT_TIMEOUT = 120
     DEFAULT_VERBOSITY = False 
+    DEFAULT_DISABLE_PROXY_CHECK = False
 
     # Variables
     usage = "usage %prog [options]"
@@ -56,6 +57,7 @@ class Client(object):
     timeout = DEFAULT_TIMEOUT
     verbose = DEFAULT_VERBOSITY
     fullOptional = None
+    disableProxyCheck = DEFAULT_DISABLE_PROXY_CHECK
 
 
     def __init__(self, name, version):
@@ -104,6 +106,12 @@ class Client(object):
                       dest="verbose",
                       help="verbose mode [default: %default]",
                       default = self.DEFAULT_VERBOSITY)
+
+        optionParser.add_option("--disable-proxy-check",
+                      action="store_true",
+                      dest="disableProxyCheck",
+                      help="Disable checking user proxy certificate validity [default: %default]",
+                      default = self.DEFAULT_DISABLE_PROXY_CHECK)
  
         if fullOptional == "TRUE":
             optionParser.add_option("-u",
@@ -198,6 +206,9 @@ class Client(object):
         if self.options.verbose:
             self.verbose = self.options.verbose
  
+        if self.options.disableProxyCheck:
+            self.disableProxyCheck = self.options.disableProxyCheck
+
         if self.options.proxy:
             os.environ["X509_USER_PROXY"] = self.options.proxy
 
@@ -259,6 +270,9 @@ class Client(object):
 
     #Check whether the proxy exists and if it has any time left. 
     def checkProxy(self):
+        if self.disableProxyCheck:
+            return        
+
         if not os.environ.has_key("X509_USER_PROXY"):
             raise Exception("X509_USER_PROXY not set")
     
