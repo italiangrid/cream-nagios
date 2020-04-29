@@ -56,7 +56,7 @@ def main():
             client.nagiosExit(client.CRITICAL, "CREAM JobOutput ERROR: %s" % ex)
 
     outputSandbox = None
-    if lastStatus == terminalStates[0] and exitCode == "0":
+    if lastStatus == terminalStates[0]:
         try:
             osbdir = client.getOutputSandbox(jobId)
             client.debug("output sandbox dir: " + osbdir)
@@ -77,12 +77,11 @@ def main():
         client.jobPurge(jobId)
     except Exception as ex:
         client.debug("cannot purge the job %s" % ex)
-    
+
     if lastStatus == terminalStates[0] and exitCode == "0":
         client.nagiosExit(client.OK, "CREAM JobOutput OK | " + outputSandbox)
     else:
-        client.nagiosExit(client.CRITICAL, "CREAM JobOutput ERROR [%s, exitCode=%s]" % (lastStatus, exitCode))
-
+        client.nagiosExit(client.CRITICAL, "CREAM JobOutput ERROR [%s, exitCode=%s | %s]" % (lastStatus, exitCode, outputSandbox))
 
 
 if __name__ == '__main__':
