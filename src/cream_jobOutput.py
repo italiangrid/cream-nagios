@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """
 Copyright (c) Members of the EGEE Collaboration. 2006-2010.
 See http://www.eu-egee.org/partners/ for details on the copyright holders.
