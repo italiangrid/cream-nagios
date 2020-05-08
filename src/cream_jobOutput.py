@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 """
 Copyright (c) Members of the EGEE Collaboration. 2006-2010.
 See http://www.eu-egee.org/partners/ for details on the copyright holders.
@@ -67,7 +67,7 @@ def main():
                     outputSandbox += "\n\n**** " + file + " ****\n"
 
                     for line in infile:
-                         outputSandbox += line
+                         outputSandbox += line.replace('|','_PIPE_')
 
             shutil.rmtree(osbdir)
         except Exception as ex:
@@ -79,9 +79,9 @@ def main():
         client.debug("cannot purge the job %s" % ex)
 
     if lastStatus == terminalStates[0] and exitCode == "0":
-        client.nagiosExit(client.OK, "CREAM JobOutput OK | " + outputSandbox)
+        client.nagiosExit(client.OK, "CREAM JobOutput OK: " + outputSandbox)
     else:
-        client.nagiosExit(client.CRITICAL, "CREAM JobOutput ERROR [%s, exitCode=%s | %s]" % (lastStatus, exitCode, outputSandbox))
+        client.nagiosExit(client.CRITICAL, "CREAM JobOutput ERROR [%s, exitCode=%s ]: %s" % (lastStatus, exitCode, outputSandbox))
 
 
 if __name__ == '__main__':
