@@ -20,10 +20,13 @@
 # SOURCE
 
 set -x
-versionFilter="^2\.|^3\.|^1\."
+versionFilter="^2\.|^3\.|^1\.|^4\."
 type="unknow"
 mwver="error"
-if [ -f glite-version ] ; then
+if [ -f /etc/umd-release ]; then
+    type="UMD"
+    mwver=`cat /etc/umd-release | awk '{print $3}'`
+elif [ -f glite-version ] ; then
     type="gLite"
     mwver=`glite-version`
 elif [ -f $EMI_TARBALL_BASE/etc/emi-version ] ; then
