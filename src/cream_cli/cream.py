@@ -290,7 +290,7 @@ class Client(object):
 
     #Submit a job to CREAM with automatic delegation and return its job id.
     def jobSubmit(self):
-        cmd="/usr/bin/glite-ce-job-submit -d -a -r " + self.url + " " + self.jdl
+        cmd="/usr/bin/glite-ce-job-submit -a -r " + self.url + " " + self.jdl
         output = self.execute(cmd)
 
         self.debug(output)

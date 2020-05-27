@@ -19,13 +19,16 @@
 #
 # SOURCE
 
-set -x
+#set -x
 versionFilter="^2\.|^3\.|^1\.|^4\."
 type="unknow"
 mwver="error"
 if [ -f /etc/umd-release ]; then
     type="UMD"
     mwver=`cat /etc/umd-release | awk '{print $3}'`
+elif [ -f $EMI_TARBALL_BASE/etc/umd-release ]; then
+    type="UMD"
+    mwver=`cat $EMI_TARBALL_BASE/etc/umd-release | awk '{print $3}'`
 elif [ -f glite-version ] ; then
     type="gLite"
     mwver=`glite-version`
@@ -36,11 +39,11 @@ elif [ -f lcg-version ]; then
     type="LCG"
     mwver=`lcg-version`
 else
-    echo "ERROR: [glite|lcg|emi]-version was not found in `hostname -s`"
+    echo "ERROR: unable to find glite, EMI, LCG or UMD WN version on `hostname -s`"
     exit 1
 fi
 
-set +x
+#set +x
 #echo "Version pattern: $versionFilter"
 #echo "$HOSTNAME: Deducted middleware version is $type $mwver"
 #echo "summary: $type $mwver"
