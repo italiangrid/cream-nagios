@@ -11,9 +11,9 @@ rm -f env-csh.txt
 # env | sort > env-csh.txt
 # EOF
 
-set -x
+#set -x
 /bin/csh -c "env|sort" > env-csh.txt
-set +x
+#set +x
 
 #if [ "x$1" == "xdebug" ] ; then
 #   echo "CSH script generated the following output:"
